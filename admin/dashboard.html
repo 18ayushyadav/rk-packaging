@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — RK Packaging Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-icon">RK</div>
+        <div>
+          <h3>RK Packaging</h3>
+          <small>Admin Panel</small>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="products.html"><span class="nav-icon">📦</span> Products</a>
+        <a href="gallery.html"><span class="nav-icon">🖼️</span> Gallery</a>
+        <a href="contacts.html"><span class="nav-icon">📩</span> Messages</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()">
+          <span class="nav-icon">🚪</span> Logout
+        </button>
+        <a href="/" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;color:rgba(255,255,255,0.5);font-weight:500;font-size:0.95rem;text-decoration:none;transition:all 0.3s;">
+          <span class="nav-icon">🌐</span> View Website
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Welcome back! Here's an overview of your website.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon red">📦</div>
+          <div>
+            <h3 id="totalProducts">0</h3>
+            <p>Total Products</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">🖼️</div>
+          <div>
+            <h3 id="totalGallery">0</h3>
+            <p>Gallery Images</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">📩</div>
+          <div>
+            <h3 id="totalMessages">0</h3>
+            <p>Contact Messages</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-card">
+        <div class="data-card-header">
+          <h3>Quick Actions</h3>
+        </div>
+        <div style="padding:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+          <a href="products.html" style="display:flex;align-items:center;gap:12px;padding:20px;background:#f5f6fa;border-radius:10px;text-decoration:none;color:#2d3436;font-weight:600;transition:all 0.3s;">
+            <span style="font-size:1.5rem;">📦</span> Manage Products
+          </a>
+          <a href="gallery.html" style="display:flex;align-items:center;gap:12px;padding:20px;background:#f5f6fa;border-radius:10px;text-decoration:none;color:#2d3436;font-weight:600;transition:all 0.3s;">
+            <span style="font-size:1.5rem;">🖼️</span> Manage Gallery
+          </a>
+          <a href="contacts.html" style="display:flex;align-items:center;gap:12px;padding:20px;background:#f5f6fa;border-radius:10px;text-decoration:none;color:#2d3436;font-weight:600;transition:all 0.3s;">
+            <span style="font-size:1.5rem;">📩</span> View Messages
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/admin.js"></script>
+  <script>loadDashboard();</script>
+</body>
+</html>

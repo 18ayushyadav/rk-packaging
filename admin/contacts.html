@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages — RK Packaging Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-icon">RK</div>
+        <div>
+          <h3>RK Packaging</h3>
+          <small>Admin Panel</small>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+        <a href="products.html"><span class="nav-icon">📦</span> Products</a>
+        <a href="gallery.html"><span class="nav-icon">🖼️</span> Gallery</a>
+        <a href="contacts.html"><span class="nav-icon">📩</span> Messages</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="logout()"><span class="nav-icon">🚪</span> Logout</button>
+        <a href="/" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;color:rgba(255,255,255,0.5);font-weight:500;font-size:0.95rem;text-decoration:none;">
+          <span class="nav-icon">🌐</span> View Website
+        </a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <h1 class="page-title">Contact Messages</h1>
+      <p class="page-subtitle">Messages submitted through the contact form</p>
+
+      <div class="data-card">
+        <div class="data-card-header">
+          <h3>All Messages</h3>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Message</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="contactsTableBody">
+            <tr><td colspan="5" class="empty-state"><div class="icon">📩</div><p>Loading messages...</p></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/admin.js"></script>
+  <script>loadAdminContacts();</script>
+</body>
+</html>
