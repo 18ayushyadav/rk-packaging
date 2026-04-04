@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://rk-packaging.onrender.com/api/$1" },
+    { "source": "/uploads/(.*)", "destination": "https://rk-packaging.onrender.com/uploads/$1" },
+    { "source": "/admin", "destination": "/admin/login.html" },
+    { "source": "/admin/(.*)", "destination": "/admin/$1" },
+    { "source": "/", "destination": "/public/index.html" },
+    { "source": "/(.*)", "destination": "/public/$1" }
+  ]
+}
