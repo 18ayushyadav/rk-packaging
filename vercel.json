@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": null,
+  "outputDirectory": "./",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://rk-packaging.onrender.com/api/$1" },
     { "source": "/uploads/(.*)", "destination": "https://rk-packaging.onrender.com/uploads/$1" },
