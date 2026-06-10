@@ -3,26 +3,21 @@ const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
 
-const connectDB = require('./config/db');
-
 const app = express();
-
-// Connect to MongoDB
-connectDB();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Images are now served directly from Cloudinary
 
 // Serve public frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve admin panel
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
+app.get('/admin', (req, res) => res.redirect('/admin/login.html'));
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));

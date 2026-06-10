@@ -4,3 +4,8 @@ uploads/products/*
 uploads/gallery/*
 !uploads/products/.gitkeep
 !uploads/gallery/.gitkeep
+
+/generated/prisma
+prisma.txt
+prisma_out.txt
+

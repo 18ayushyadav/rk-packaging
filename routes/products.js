@@ -1,34 +1,16 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const Product = require('../models/Product');
+const prisma = require('../config/prisma');
 const authMiddleware = require('../middleware/auth');
+const { upload } = require('../config/cloudinary');
 
 const router = express.Router();
-
-// Multer config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '..', 'uploads', 'products');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'));
-  }
-});
-const upload = multer({ storage, fileFilter: (req, file, cb) => {
-  const allowed = /jpeg|jpg|png|gif|webp/;
-  const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-  const mime = allowed.test(file.mimetype);
-  cb(null, ext && mime);
-}});
 
 // GET all products (public)
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const products = await prisma.product.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -40,13 +22,15 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   try {
     const { name, description, benefits } = req.body;
     if (!req.file) return res.status(400).json({ message: 'Image is required' });
-    const product = new Product({
-      name,
-      description,
-      benefits: benefits || '',
-      image: '/uploads/products/' + req.file.filename
+    
+    const product = await prisma.product.create({
+      data: {
+        name,
+        description,
+        benefits: benefits || '',
+        image: req.file.path // Cloudinary URL
+      }
     });
-    await product.save();
     res.status(201).json(product);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -56,21 +40,21 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
 // PUT update product (admin)
 router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
   try {
+    const id = parseInt(req.params.id);
     const { name, description, benefits } = req.body;
-    const update = { name, description, benefits };
+    
+    const updateData = { name, description, benefits };
     if (req.file) {
-      // Delete old image
-      const old = await Product.findById(req.params.id);
-      if (old && old.image) {
-        const oldPath = path.join(__dirname, '..', old.image);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
-      update.image = '/uploads/products/' + req.file.filename;
+      updateData.image = req.file.path;
     }
-    const product = await Product.findByIdAndUpdate(req.params.id, update, { new: true });
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    
+    const product = await prisma.product.update({
+      where: { id },
+      data: updateData
+    });
     res.json(product);
   } catch (error) {
+    if (error.code === 'P2025') return res.status(404).json({ message: 'Product not found' });
     res.status(500).json({ message: error.message });
   }
 });
@@ -78,15 +62,11 @@ router.put('/:id', authMiddleware, upload.single('image'), async (req, res) => {
 // DELETE product (admin)
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
-    // Delete image file
-    if (product.image) {
-      const imgPath = path.join(__dirname, '..', product.image);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    const id = parseInt(req.params.id);
+    await prisma.product.delete({ where: { id } });
     res.json({ message: 'Product deleted' });
   } catch (error) {
+    if (error.code === 'P2025') return res.status(404).json({ message: 'Product not found' });
     res.status(500).json({ message: error.message });
   }
 });

@@ -1,5 +1,5 @@
 const express = require('express');
-const Contact = require('../models/Contact');
+const prisma = require('../config/prisma');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
@@ -11,8 +11,9 @@ router.post('/', async (req, res) => {
     if (!name || !phone || !message) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-    const contact = new Contact({ name, phone, message });
-    await contact.save();
+    await prisma.contact.create({
+      data: { name, phone, message }
+    });
     res.status(201).json({ message: 'Message sent successfully!' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -22,7 +23,9 @@ router.post('/', async (req, res) => {
 // GET all contacts (admin)
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const contacts = await Contact.find().sort({ createdAt: -1 });
+    const contacts = await prisma.contact.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
     res.json(contacts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -32,10 +35,15 @@ router.get('/', authMiddleware, async (req, res) => {
 // DELETE contact (admin)
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    const contact = await Contact.findByIdAndDelete(req.params.id);
-    if (!contact) return res.status(404).json({ message: 'Message not found' });
+    await prisma.contact.delete({
+      where: { id: parseInt(req.params.id) }
+    });
     res.json({ message: 'Message deleted' });
   } catch (error) {
+    // Prisma will throw error if not found, we can catch or check
+    if (error.code === 'P2025') {
+       return res.status(404).json({ message: 'Message not found' });
+    }
     res.status(500).json({ message: error.message });
   }
 });
